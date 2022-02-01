@@ -4,7 +4,10 @@
 %
 % >>addpath(genpath('Path to folder containing this file.'))
 %
-% Good luck!!
+% Once all the code is added to the MATLAB path, this script should work
+% without any other adjustments needed.
+%
+% Enjoy!
 
 clearvars; close all;
 
@@ -13,7 +16,7 @@ NumCoefficients = 100; % For filter
 PlantDelay = 4; % milliseconds (delta)
 ControllerDelay = 3; % milliseconds (tau)
 ControlParameter = 0.01; % mu
-RecordingTime = 50; % seconds
+RecordingTime = 20; % seconds
 Pcoeff = 0.99; % Transfer function coefficient from source to receiver
 Fcoeff = 0.00; % Transfer function coefficient for feedback
 Hcoeff = 0.99; % Transfer function coefficient for filter
