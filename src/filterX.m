@@ -332,8 +332,13 @@ function createPlots(fs,n,total_d,total_y,totalError,W,Wopt,Hhat,Phat,PassiveID_
     end
 
     hold off
-    ylim([-1.1*max([max(abs(W)+0.001),max(abs(Hhat)+0.001),max(abs(Phat)+0.001)]),...
-           1.1*max([max(abs(W)+0.001),max(abs(Hhat)+0.001),max(abs(Phat)+0.001)])])
+
+    if PassiveID_H || PassiveID_P
+        ylim([-1.1*max([max(abs(W)+0.001),max(abs(Hhat)+0.001),max(abs(Phat)+0.001)]),...
+               1.1*max([max(abs(W)+0.001),max(abs(Hhat)+0.001),max(abs(Phat)+0.001)])])
+    else
+        ylim([-1.1*max(abs(W) + 0.001),1.1*max(abs(W) + 0.001)])
+    end
     title('Filter Coefficients')
     xlabel('Filter Time Index')
     ylabel('Value')

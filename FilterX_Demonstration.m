@@ -12,11 +12,11 @@
 clearvars; close all;
 
 % Critical Parameters
-NumCoefficients = 100; % For filter
+NumCoefficients = 20; % For filter
 PlantDelay = 4; % milliseconds (delta)
 ControllerDelay = 3; % milliseconds (tau)
 ControlParameter = 0.01; % mu
-RecordingTime = 20; % seconds
+RecordingTime = 0.5; % seconds
 Pcoeff = 0.99; % Transfer function coefficient from source to receiver
 Fcoeff = 0.00; % Transfer function coefficient for feedback
 Hcoeff = 0.99; % Transfer function coefficient for filter
@@ -24,15 +24,16 @@ AddedNoiseToError = 0; % How much noise to add to the error signal
 
 % Noise Options
 NoiseType = 'tone'; % 'tone', 'noise'
-ToneFrequency = 220; % Only useful if using a 'sine wave' in NoiseType
+ToneFrequency = 220; % Only useful if using a 'tone' in NoiseType
 
-% Online Passive Identification
-PassiveID_H = true; % Whether to passively identify the filter transfer function
-PassiveID_P = true; % Whether to passively identify the source-receiver transfer function
+% Online Passive Identification (Be patient, this can take some time to get
+% going and you see results in the animation.)
+PassiveID_H = false; % Whether to passively identify the filter transfer function
+PassiveID_P = false; % Whether to passively identify the source-receiver transfer function
 Alpha = 0.01; % Passive ID coefficient (large = fast, but maybe unstable)
 
 % Plotting Options
-Animate = false; % Whether to animate the entire recording
+Animate = true; % Whether to animate the entire recording (slows down the simulation)
 ProduceFinalPlot = true; % Whether to produce a summary plot
 ProduceAttenuationPlot = false; % Whether to produce final overall attenuation plot
 ProducePassiveIDPlot = true; % Whether to plot spectra for PassiveID results
