@@ -315,6 +315,7 @@ function createPlots(fs,n,total_d,total_y,totalError,W,Wopt,Hhat,Phat,PassiveID_
     xlabel('Time (s)')
     ylabel ('Error')
     grid on
+    ylim_opts = max(abs(W) + 0.001);
 
     subplot(5,1,3)
     plot(t(1:length(W)),W,'DisplayName','W Estimate'); hold on
@@ -323,22 +324,22 @@ function createPlots(fs,n,total_d,total_y,totalError,W,Wopt,Hhat,Phat,PassiveID_
     
         plot(t(1:length(W)),Hhat,'DisplayName','H Estimate')
         
+        ylim_opts = [ylim_opts;max(abs(Hhat) + 0.001)];
+
     end
 
     if PassiveID_P
     
         plot(t(1:length(W)),Phat,'DisplayName','P Estimate','Color',[0,0.9,0])
+
+        ylim_opts = [ylim_opts;max(abs(Phat) + 0.001)];
         
     end
 
     hold off
 
-    if PassiveID_H || PassiveID_P
-        ylim([-1.1*max([max(abs(W)+0.001),max(abs(Hhat)+0.001),max(abs(Phat)+0.001)]),...
-               1.1*max([max(abs(W)+0.001),max(abs(Hhat)+0.001),max(abs(Phat)+0.001)])])
-    else
-        ylim([-1.1*max(abs(W) + 0.001),1.1*max(abs(W) + 0.001)])
-    end
+    ylim([-1.1*max(ylim_opts),1.1*max(ylim_opts)])
+    
     title('Filter Coefficients')
     xlabel('Filter Time Index')
     ylabel('Value')

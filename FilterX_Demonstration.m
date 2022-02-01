@@ -7,6 +7,10 @@
 % Once all the code is added to the MATLAB path, this script should work
 % without any other adjustments needed.
 %
+% Tip: If you ever get stuck in a long animation, hold 'control-c' in the
+% MATLAB Command Window until the animation stops and the '>>' symbols
+% return in the Command Window.
+%
 % Enjoy!
 
 clearvars; close all;
@@ -23,7 +27,7 @@ Hcoeff = 0.99; % Transfer function coefficient for filter
 AddedNoiseToError = 0; % How much noise to add to the error signal
 
 % Noise Options
-NoiseType = 'tone'; % 'tone', 'noise'
+NoiseType = 'noise'; % 'tone', 'noise'
 ToneFrequency = 220; % Only useful if using a 'tone' in NoiseType
 
 % Online Passive Identification (Be patient, this can take some time to get
