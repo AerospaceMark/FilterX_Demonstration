@@ -20,7 +20,8 @@ function [attenuation, times, SNR_extraNoise] = filterX(varargin)
     p.addParameter('PassiveID_H',false);
     p.addParameter('PassiveID_P',false);
     p.addParameter('Alpha',0.001); % For updating Hhat
-    p.addParameter('ProducePassiveIDPlot',false)
+    p.addParameter('ProducePassiveIDPlot',false);
+    p.addParameter('WaveformTimeShown',0.1); % for plotting the waveform
     
     % Parsing the inputs
     p.parse(varargin{:});
@@ -43,6 +44,7 @@ function [attenuation, times, SNR_extraNoise] = filterX(varargin)
     PassiveID_P     = p.Results.PassiveID_P;
     alpha           = p.Results.Alpha;
     PassiveIDPlot   = p.Results.ProducePassiveIDPlot;
+    WaveformTimeShown = p.Results.WaveformTimeShown;
 
     %----------------- Constants ----------------------------%
     n = zeros(N,1); % Buffer
@@ -59,11 +61,11 @@ function [attenuation, times, SNR_extraNoise] = filterX(varargin)
     
     % System transfer function
     H = zeros(N,1);
-    H(tau+1) = Hcoeff;
+    H(floor(fs*tau)+1) = Hcoeff;
     
     % Transfer function between source & receiver
     P = zeros(N,1);
-    P(delta+1) = Pcoeff;
+    P(floor(fs*delta)+1) = Pcoeff;
 
     % Estimate of system transfer function
     if PassiveID_P
@@ -74,7 +76,7 @@ function [attenuation, times, SNR_extraNoise] = filterX(varargin)
     
     % Feedback loop
     F = zeros(N,1);
-    F(delta+1) = Fcoeff;
+    F(floor(fs*delta)+1) = Fcoeff;
     
     % Estimate of system transfer function
     if PassiveID_H
@@ -176,7 +178,7 @@ function [attenuation, times, SNR_extraNoise] = filterX(varargin)
 
         %-------------- Create plots --------------%
         if Animate
-            createPlots(fs,n,total_d,total_y,totalError,W,Wopt,Hhat,Phat,PassiveID_H,PassiveID_P)
+            createPlots(fs,n,total_d,total_y,totalError,W,Wopt,Hhat,Phat,PassiveID_H,PassiveID_P,WaveformTimeShown)
         end
             
     end
@@ -187,7 +189,7 @@ function [attenuation, times, SNR_extraNoise] = filterX(varargin)
     
     if ProduceFinalPlot
  
-        createPlots(fs,n,total_d,total_y,totalError,W,Wopt,Hhat,Phat,PassiveID_H,PassiveID_P)
+        createPlots(fs,n,total_d,total_y,totalError,W,Wopt,Hhat,Phat,PassiveID_H,PassiveID_P,WaveformTimeShown)
         
         stitle = sgtitle(strcat("Convergence with n(t) = ",convertCharsToStrings(NoiseType),...
                         " and \mu = ",num2str(mu)));
@@ -291,7 +293,7 @@ function [attenuation, times, SNR_extraNoise] = filterX(varargin)
     
 end
 
-function createPlots(fs,n,total_d,total_y,totalError,W,Wopt,Hhat,Phat,PassiveID_H,PassiveID_P)
+function createPlots(fs,n,total_d,total_y,totalError,W,Wopt,Hhat,Phat,PassiveID_H,PassiveID_P,WaveformTimeShown)
 
     dt = 1/fs;
     t = 0:dt:(length(n)*dt - dt);
@@ -302,7 +304,7 @@ function createPlots(fs,n,total_d,total_y,totalError,W,Wopt,Hhat,Phat,PassiveID_
     plot(t_d,total_d,'DisplayName','d(t)'); hold on
     plot(t_d,total_y,'DisplayName','y(t)'); hold off
     ylim([-3,3])
-    xlim([length(total_d)/fs - 0.1,length(total_d)/fs])
+    xlim([length(total_d)/fs - WaveformTimeShown,length(total_d)/fs])
     title('Waveforms')
     xlabel('Time (s)')
     ylabel('Pressure (Pa)')
@@ -352,7 +354,7 @@ function createPlots(fs,n,total_d,total_y,totalError,W,Wopt,Hhat,Phat,PassiveID_
     hold on
     plot(W_freqs,abs(Wopt),'r--','LineWidth',2,'DisplayName','Ideal')
     hold off
-    xlim([0,500])
+    xlim([0,fs/2])
     ylim([-0.01,1.1*max(abs(W_frequency_domain))])
     title('Filter Frequency Response (Magnitude)')
     xlabel('Frequency (Hz)')
@@ -361,7 +363,7 @@ function createPlots(fs,n,total_d,total_y,totalError,W,Wopt,Hhat,Phat,PassiveID_
 
     subplot(5,1,5)
     plot(W_freqs,angle(W_frequency_domain),'DisplayName','Calculated','LineWidth',2)
-    xlim([10,500])
+    xlim([0,fs/2])
     hold on
     plot(W_freqs,angle(Wopt),'r--','LineWidth',2,'DisplayName','Ideal')
     hold off
