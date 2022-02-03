@@ -161,7 +161,7 @@ function [attenuation, times, SNR_extraNoise] = filterX(varargin)
         end
         
         % Get the current attenuation
-        if mod(i,fs/10)
+        if ~mod(i,fs/10)
             nsquared = rms(n)^2;
             esquared = rms(e)^2;
             
